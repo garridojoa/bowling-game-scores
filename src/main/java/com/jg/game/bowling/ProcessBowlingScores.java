@@ -54,7 +54,7 @@ public class ProcessBowlingScores {
      * @return Header to show.
      */
     public String printResultsHeaders() {
-        String print = FRAMES_TITLE + PRINT_SEPARATOR;
+        String print = FRAMES_TITLE + PRINT_SEPARATOR + PRINT_SEPARATOR;
         for (int ind = 1; ind <= BOWLING_MAX_FRAME; ind++) {
             print = print.concat(String.valueOf(ind) + PRINT_SEPARATOR + PRINT_SEPARATOR);
         }
@@ -94,7 +94,7 @@ public class ProcessBowlingScores {
      * @throws Exception 
      */
     public String printPlayerScores(BowlingPlayer player) throws BowlingException {
-        String print = SCORES_TITLE + PRINT_SEPARATOR;
+        String print = SCORES_TITLE + PRINT_SEPARATOR + PRINT_SEPARATOR;
         Integer previousScore = 0;
         for (int ind = 0; ind < player.getFrames().size(); ind++) {
             Integer currentScore = 0;
@@ -159,9 +159,9 @@ public class ProcessBowlingScores {
                 return true;
             }
         } else if (frameNumber == BOWLING_MAX_FRAME) {
-           if (pinfalls.size() == 2 && getPinfallsNumber(pinfalls.get(0)) + getPinfallsNumber(pinfalls.get(1)) < 10) {
+            if (pinfalls.size() == 2 && getPinfallsNumber(pinfalls.get(0)) + getPinfallsNumber(pinfalls.get(1)) < MAX_POINTS) {
                 return true;
-            } else if (pinfalls.size() == 3 && getPinfallsNumber(pinfalls.get(0)) + getPinfallsNumber(pinfalls.get(1)) >= 10) {
+            } else if (pinfalls.size() == 3 && getPinfallsNumber(pinfalls.get(0)) + getPinfallsNumber(pinfalls.get(1)) >= MAX_POINTS) {
                 return true;
             }
         } else {

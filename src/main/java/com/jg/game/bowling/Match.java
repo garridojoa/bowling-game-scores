@@ -62,6 +62,8 @@ public class Match {
             }
         } catch (FileNotFoundException fnfExc) {
             userInterface.showMessage(String.format("Error reading the result file at path: %s. Please check: %s", resultsFilePath, fnfExc.getMessage()));
+        } catch (BowlingException bExc) {
+            userInterface.showMessage(String.format("Exception occurred processing results: %s", bExc.getErrorMessage()));
         }        
     }
 
