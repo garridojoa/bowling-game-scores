@@ -1,16 +1,16 @@
-package com.jg.game.bowling;
+package com.jg.game.bowling.exceptions;
 
 /**
- * Bowling Base Exception
+ * Base Exception
  * @author jgarrido
  * @date 2021/03/07
  */
-public class BowlingException extends RuntimeException {
+public class BaseException extends RuntimeException {
     private static final long serialVersionUID = 1L;
     
     private String errorMessage;
 
-    public BowlingException(String errorMessage) {
+    public BaseException(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 

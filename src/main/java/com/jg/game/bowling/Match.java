@@ -1,17 +1,15 @@
 package com.jg.game.bowling;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 import com.jg.game.bowling.entity.Bowling;
 import com.jg.game.bowling.entity.BowlingPlayer;
+import com.jg.game.bowling.exceptions.BaseException;
+import com.jg.game.bowling.exceptions.ParsingException;
 import com.jg.game.bowling.ui.Console;
 import com.jg.game.bowling.ui.UserInterface;
+import com.jg.game.bowling.utils.FileProcessor;
 
 /**
  * Match class to read game results and print scores.
@@ -20,7 +18,6 @@ import com.jg.game.bowling.ui.UserInterface;
  */
 public class Match {
     private static final String DEFAULT_FILE_PATH = "results.txt";
-    private static final String RESULT_LINE_SEPARATOR = "\\t";
 
     public static void main(String[] args) {
         UserInterface userInterface = new Console();
@@ -33,26 +30,10 @@ public class Match {
             // Use default file path.
             resultsFilePath = DEFAULT_FILE_PATH;
         }
-        File resultsFile = new File(resultsFilePath);
-        Map<String, List<String>> resultsMap = new HashMap<String, List<String>>();
+        FileProcessor fileProcessor = new FileProcessor(resultsFilePath);
+        ProcessBowlingScores processScores = new ProcessBowlingScores();
         try {
-            Scanner fileEntryScanner = new Scanner(resultsFile);
-            while (fileEntryScanner.hasNext()) {
-                String resultLine = fileEntryScanner.nextLine();
-                String[] resultArray = resultLine.split(RESULT_LINE_SEPARATOR);
-                if (resultArray.length == 2) {
-                    String name = resultArray[0].trim();
-                    String amount = resultArray[1].trim();
-                    if (!resultsMap.containsKey(name)) {
-                        resultsMap.put(name, new ArrayList<String>());
-                    }
-                    resultsMap.get(name).add(amount);
-                } else {
-                    userInterface.showMessage(String.format("Error parsing result line, should have onlye Name and amount: " + resultLine));
-                    return;
-                }
-            }
-            ProcessBowlingScores processScores = new ProcessBowlingScores();
+            Map<String, List<String>> resultsMap = fileProcessor.process();
             Bowling game = processScores.processResults(resultsMap, new Bowling());
             userInterface.showMessage(processScores.printResultsHeaders());
             for (BowlingPlayer player : game.getPlayers()) {
@@ -60,9 +41,9 @@ public class Match {
                 userInterface.showMessage(processScores.printPlayerResults(player));
                 userInterface.showMessage(processScores.printPlayerScores(player));
             }
-        } catch (FileNotFoundException fnfExc) {
-            userInterface.showMessage(String.format("Error reading the result file at path: %s. Please check: %s", resultsFilePath, fnfExc.getMessage()));
-        } catch (BowlingException bExc) {
+        } catch (ParsingException pExc) {
+            userInterface.showMessage(String.format("Exception occurred parsing data: %s", pExc.getErrorMessage()));
+        } catch (BaseException bExc) {
             userInterface.showMessage(String.format("Exception occurred processing results: %s", bExc.getErrorMessage()));
         }        
     }
